@@ -8,6 +8,9 @@ def bundle(state):
     writer.writerow(['对账',rid,'','','',json.dumps(state.get('reconcile',{}),ensure_ascii=False,sort_keys=True)])
     for row in state.get('calculations',[]):writer.writerow(['计算',rid,row.get('line',''),row.get('id',''),row.get('code',''),json.dumps(row,ensure_ascii=False,sort_keys=True)])
     for row in state['quarantine']:writer.writerow(['隔离',rid,row['line'],row.get('id',''),row['code'],json.dumps(row.get('raw',{}),ensure_ascii=False,sort_keys=True)])
+    ledger=state.get('ledger',{})
+    for ins in ledger.get('instructions',[]):writer.writerow(['指令',rid,'',ins.get('policy_id',''),ins.get('kind',''),json.dumps(ins,ensure_ascii=False,sort_keys=True)])
+    if ledger:writer.writerow(['指令汇总',rid,'','','',json.dumps({'summary':ledger.get('summary',{}),'execution':ledger.get('execution',[]),'next_deduction':ledger.get('next_deduction',[]),'duplicates':ledger.get('duplicates',0)},ensure_ascii=False,sort_keys=True)])
     return '\ufeff'+out.getvalue()
 
 def checksum(state):
